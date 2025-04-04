@@ -12,7 +12,8 @@ export class OnceResolable<T> {
 	constructor(
 		cb: (resolve: Function, reject: Function) => void = () => void 0
 	) {
-		const { promise, resolve } = Promise.withResolvers();
+		// @ts-expect-error withResolvers needs es2024 or above
+		const { promise, resolve } = Promise.withResolvers<T>();
 		this.promise = promise;
 		this._resolve = resolve;
 		cb(this.resolve, this.refuse);
