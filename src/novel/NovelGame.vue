@@ -2,7 +2,7 @@
 import { useDisposableFactory } from "@/disposable/useDisposableFactory";
 import { disposableListener } from "@/document/disposableListener";
 import { GlitchText } from "@/GlitchText/GlitchText";
-import { ofDisposableListener } from "@/promisehack/ofDisposableListener";
+import { ofDisposableListener } from "@/OnceResolable/ofDisposableListener";
 import { sleep } from "@/sleep/sleep";
 import { SECOND } from "@/time/constants";
 import { storeToRefs } from "pinia";
@@ -49,11 +49,11 @@ onMounted(async () => {
 			(resolve) => disposableListener("click", resolve as EventListenerOrEventListenerObject)
 		);
 		if (deadline_end()) {
-			_request_skip_if_clicked.reject()
+			_request_skip_if_clicked.refuse()
 			return
 		}
 		for (let index = 0; index < TEXT_TARGET.length; index++) {
-			await sleep(50);
+			await Promise.race([sleep(50), _request_skip_if_clicked.promise]);
 			const letter = TEXT_TARGET[index];
 			texthere_text.value += letter;
 
@@ -62,7 +62,8 @@ onMounted(async () => {
 				break
 			}
 		}
-		_request_skip_if_clicked.reject()
+		_request_skip_if_clicked.refuse()
+		
 
 		await sleep(SECOND)
 
