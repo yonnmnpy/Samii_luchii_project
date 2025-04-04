@@ -7,6 +7,7 @@ import { sleep } from "@/sleep/sleep";
 import { SECOND } from "@/time/constants";
 import { storeToRefs } from "pinia";
 import { h, onMounted, onUnmounted, reactive, ref, watch, type Reactive, type Ref } from "vue";
+import CurrentPicture from './CurrentPicture.vue';
 import { useSceneState } from "./scene/singleton";
 const scene_state_singleton = useSceneState()
 
@@ -63,7 +64,7 @@ onMounted(async () => {
 			}
 		}
 		_request_skip_if_clicked.refuse()
-		
+
 
 		await sleep(SECOND)
 
@@ -86,9 +87,12 @@ onMounted(async () => {
 		">Change BG</button>
 	</main>
 
+	<x-current-picture-position>
+		<CurrentPicture />
+	</x-current-picture-position>
+
 
 	<div id="texthere">
-
 		{{ texthere_text }}
 	</div>
 </template>
@@ -98,7 +102,7 @@ onMounted(async () => {
 main {
 	width: 100%;
 	height: 100vh;
-	transition: all 1s;
+	transition: all 5s;
 }
 
 #texthere {
@@ -107,7 +111,14 @@ main {
 	width: 100vw;
 	height: 5em;
 	color: white;
-	background: black;
+	background: #0009;
 	text-align: center;
+}
+
+x-current-picture-position {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	translate: -50% -50%;
 }
 </style>
