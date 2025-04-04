@@ -1,0 +1,18 @@
+@import './base.css';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  line-height: 1.6;
+  font-size: 16px;
+  color: #444;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+}
