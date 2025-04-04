@@ -1,7 +1,7 @@
 {
   "files": [],
   "compilerOptions": {
-    "target": "ES2024",
+    "target": "ESnext",
   },
   "references": [
     {
