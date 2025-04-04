@@ -12,3 +12,4 @@ jobs:
         username: 'yonnmnpy'
         reponame: 'Samii_luchii_project'
         token: ${{ secrets.GITHUB_TOKEN }} # Leave this line unchanged
+        useyarn: true
