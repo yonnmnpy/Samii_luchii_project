@@ -1,3 +1,5 @@
+import { arrayPadEnd } from "@/array";
+
 type Next = string | Command;
 enum DefaultCommandKey {
 	Pause,
@@ -61,13 +63,4 @@ function parseCommand(commandBody: string) {
 	};
 }
 
-
-function arrayPadEnd<T>(target: T[], tolength: number, fill: T): T[] {
-	const diff = tolength - target.length;
-	if (diff <= 0) {
-		return target;
-	}
-
-	target.concat(Array.from({ length: diff }).fill(fill) as T[]);
-	return target;
-}
+	
