@@ -1,11 +1,17 @@
+import { arraySpliceItem } from "@/array";
 import { disposableListener } from "@/document/disposableListener";
 import { ofDisposableListener } from "@/OnceResolable/ofDisposableListener";
 import { sleep } from "@/sleep";
 import { GlitchText } from "@/text/transformations/GlitchText";
 import { LetterByLetterWriter } from "@/text/transformations/LetterByLetterWriter";
-import type { Ref } from "vue";
+import { type Ref } from "vue";
 
-export function _makeUtilsBy(texthere_text: Ref<string>, deadline_end: Function){
+export function _makeUtilsBy(
+	texthere_text: Ref<string>,
+	deadline_end: Function
+) {
+	const _opened_tags: string[] = [];
+	
 	async function write(text: string) {
 		const _request_skip_if_clicked = ofDisposableListener((resolve) =>
 			disposableListener("click", resolve as EventListenerOrEventListenerObject)
@@ -16,30 +22,59 @@ export function _makeUtilsBy(texthere_text: Ref<string>, deadline_end: Function)
 		}
 		for (const next of new LetterByLetterWriter(text)) {
 			if (typeof next === "string") {
+				await skippable_sleep(50)
 				texthere_text.value += next;
-				await Promise.race([sleep(50), _request_skip_if_clicked.promise]);
-				if (_request_skip_if_clicked.isResolved) {
-					texthere_text.value = text;
-					break;
-				}
 				continue;
 			}
-			switch (next.commandKey) {
+			switch (next.commandKey) { 
 				case "pause": {
-					await Promise.race([
-						sleep(Number(next.values.time)),
-						_request_skip_if_clicked.promise,
-					]);
+					await skippable_sleep(Number(next.values.time))
 					break;
 				}
+				case "switch-bold": {
+					if (_opened_tags.includes("<b>")) {
+						texthere_text.value += "</b>";
+						arraySpliceItem(_opened_tags, "<b>");
+					} else {
+						texthere_text.value += "<b>";
+						_opened_tags.push("<b>")
+					}
+					break
+				}
+				default:
+					alert(`next.commandKey ${next.commandKey} is not defined`);
 			}
 		}
 		_request_skip_if_clicked.refuse();
+
+		function skippable_sleep(ms: number){
+			if (_request_skip_if_clicked.isFinally){
+				return
+			}
+			return Promise.race([sleep(ms), _request_skip_if_clicked.promise]);
+		}
 	}
 	async function glitch(from: string, to: string) {
+		const _request_skip_if_clicked = ofDisposableListener((resolve) =>
+			disposableListener("click", resolve as EventListenerOrEventListenerObject)
+		);
+		if (deadline_end()) {
+			_request_skip_if_clicked.refuse();
+			return;
+		}
+
 		for (const state of new GlitchText(from, to)) {
 			texthere_text.value = state;
-			await sleep(50);
+			await skippable_sleep(50)
+		}
+
+		_request_skip_if_clicked.refuse();
+
+		function skippable_sleep(ms: number){
+			if (_request_skip_if_clicked.isFinally){
+				return
+			}
+			return Promise.race([sleep(ms), _request_skip_if_clicked.promise]);
 		}
 	}
 	function empty() {
@@ -48,15 +83,20 @@ export function _makeUtilsBy(texthere_text: Ref<string>, deadline_end: Function)
 	function currentText() {
 		return texthere_text.value;
 	}
-	function write_pause(ms: number) {
+	function use_pause(ms: number) {
 		return `^[pause time=${ms}]`;
 	}
 
+	function switch_bold() {
+		return `^[switch-bold]`;
+	}
+
 	return {
-		write_pause,
+		use_pause,
 		currentText,
 		empty,
 		glitch,
-		write
-	}
+		write,
+		switch_bold,
+	};
 }
