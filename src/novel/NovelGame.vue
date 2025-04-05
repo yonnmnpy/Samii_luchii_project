@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { useDisposableFactory } from "@/disposable/useDisposableFactory";
-import { disposableListener } from "@/document/disposableListener";
-import { GlitchText } from "@/GlitchText/GlitchText";
-import { ofDisposableListener } from "@/OnceResolable/ofDisposableListener";
-import { sleep } from "@/sleep/sleep";
-import { SECOND } from "@/time/constants";
+import { _run_scene } from "@/novel/_scene/main";
 import { storeToRefs } from "pinia";
 import { h, onMounted, onUnmounted, reactive, ref, watch, type Reactive, type Ref } from "vue";
 import CurrentPicture from './CurrentPicture.vue';
@@ -13,6 +9,7 @@ const scene_state_singleton = useSceneState()
 
 
 const { deadline_end } = useDisposableFactory(onUnmounted)
+
 
 const template_main = ref()
 function createX(backgroundRule: Ref<string, string>) {
@@ -42,37 +39,10 @@ watch(backgroundRule, () => {
 	list.push(createX(backgroundRule))
 })
 const texthere_text = ref("");
-const TEXT_TARGET = "Lorem my loved lorem."
+
 
 onMounted(async () => {
-	while (true) {
-		const _request_skip_if_clicked = ofDisposableListener(
-			(resolve) => disposableListener("click", resolve as EventListenerOrEventListenerObject)
-		);
-		if (deadline_end()) {
-			_request_skip_if_clicked.refuse()
-			return
-		}
-		for (let index = 0; index < TEXT_TARGET.length; index++) {
-			await Promise.race([sleep(50), _request_skip_if_clicked.promise]);
-			const letter = TEXT_TARGET[index];
-			texthere_text.value += letter;
-
-			if (_request_skip_if_clicked.isResolved) {
-				texthere_text.value = TEXT_TARGET
-				break
-			}
-		}
-		_request_skip_if_clicked.refuse()
-
-
-		await sleep(SECOND)
-
-		for (const state of new GlitchText(TEXT_TARGET, "")) {
-			await sleep(50);
-			texthere_text.value = state;
-		}
-	}
+	_run_scene(texthere_text, deadline_end)
 })
 </script>
 
