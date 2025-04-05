@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useDisposableFactory } from "@/disposable/useDisposableFactory";
 import { _run_scene } from "@/novel/_scene/main";
-import { getRandomNumberInRange } from "@/random/in_range";
+import { randomNumberInRange } from "@/random/in_range";
 import { storeToRefs } from "pinia";
 import { h, onMounted, onUnmounted, reactive, ref, watch, type Reactive, type Ref } from "vue";
 import CurrentPicture from './CurrentPicture.vue';
@@ -27,7 +27,7 @@ function createX(backgroundRule: Ref<string, string>) {
 				width: "3vh",
 				height: "3vh",
 				left: `${Math.floor(Math.random() * 100)}vw`,
-				top: `${getRandomNumberInRange({max: 30}) * 3}vh`,
+				top: `${randomNumberInRange({max: 30}) * 3}vh`,
 				border: "solid 1px"
 
 			},

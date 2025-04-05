@@ -4,7 +4,7 @@ interface IGetRandomValueOptions {
   needRound?: boolean;
 }
 
-function getRandomNumberInRange({
+function randomNumberInRange({
   min = 0,
   max,
   needRound = true,
@@ -17,4 +17,4 @@ function getRandomNumberInRange({
   return value;
 }
 
-export { getRandomNumberInRange };
+export { randomNumberInRange };

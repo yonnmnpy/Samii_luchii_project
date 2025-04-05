@@ -1,4 +1,4 @@
-import { getRandomNumberInRange } from "@/random/in_range";
+import { randomNumberInRange } from "@/random/in_range";
 
 
 
@@ -46,7 +46,7 @@ class GlitchText {
 			word.forEach(
 				(_, index, array) =>
 					(array[index] = String.fromCharCode(
-						getRandomNumberInRange({ min: MIN, max: MAX })
+						randomNumberInRange({ min: MIN, max: MAX })
 					))
 			);
 
