@@ -25,7 +25,7 @@ export class OnceResolable<T> {
 				this.status = PromiseStatus.Fullfilled;
 				this.value = value;
 			}
-			this.resolve(value)
+			this._resolve(value)
 		}
 	}
 

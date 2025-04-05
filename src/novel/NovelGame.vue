@@ -61,9 +61,8 @@ onMounted(async () => {
 		<CurrentPicture />
 	</x-current-picture-position>
 
-
-	<!-- @vue-expect-error -->
-	<div id="texthere" v-html = "texthere_text.replaceAll('<', '&#60;').replaceAll('>', '&#62;')">
+	
+	<div id="texthere" v-html = "texthere_text">
 	</div>
 </template>
 

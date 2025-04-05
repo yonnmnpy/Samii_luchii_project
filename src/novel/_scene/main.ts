@@ -26,6 +26,7 @@ export async function _run_scene(texthere_text: Ref<string>, deadline_end: Funct
 		await w("Lorem my loved lorem.");
 		await w(switch_bold());
 		await w(".");
+		await w(" Hello, World")
 		empty();
 	}
 }

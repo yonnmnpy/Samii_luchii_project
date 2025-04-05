@@ -13,6 +13,8 @@ export function _makeUtilsBy(
 	const _opened_tags: string[] = [];
 	
 	async function write(text: string) {
+		// @ts-expect-error es2021
+		text = text.replaceAll('<', '&#60;').replaceAll('>', '&#62;')
 		const _request_skip_if_clicked = ofDisposableListener((resolve) =>
 			disposableListener("click", resolve as EventListenerOrEventListenerObject)
 		);
@@ -64,7 +66,8 @@ export function _makeUtilsBy(
 		}
 
 		for (const state of new GlitchText(from, to)) {
-			texthere_text.value = state;
+			// @ts-expect-error es2021
+			texthere_text.value = state.replaceAll('<', '&#60;').replaceAll('>', '&#62;')
 			await skippable_sleep(50)
 		}
 
