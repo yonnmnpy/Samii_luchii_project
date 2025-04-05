@@ -8,6 +8,9 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 // https://vitejs.dev/config/
 export default defineConfig({
   base: "/Samii_luchii_project",
+  build: {
+    target: "esnext"
+  },
   plugins: [
     vue(),
     vueJsx(),
