@@ -13,6 +13,6 @@ export function arrayPadEnd<T>(target: T[], tolength: number, fill: T): T[] {
 		return target;
 	}
 
-	target.concat(Array.from({ length: diff }).fill(fill) as T[]);
-	return target;
+	return target.concat(Array.from({ length: diff }).fill(fill) as T[]);
+}
 }
