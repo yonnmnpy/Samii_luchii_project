@@ -7,7 +7,7 @@ import { LetterByLetterWriter } from "@/text/transformations/LetterByLetterWrite
 import { type Ref } from "vue";
 
 export function _makeUtilsBy(
-	texthere_text: Ref<string>,
+	target_text: Ref<string>,
 	deadline_end: Function
 ) {
 	const _opened_tags: string[] = [];
@@ -24,8 +24,8 @@ export function _makeUtilsBy(
 		}
 		for (const next of new LetterByLetterWriter(text)) {
 			if (typeof next === "string") {
-				await skippable_sleep(50)
-				texthere_text.value += next;
+				await skippable_sleep(80)
+				target_text.value += next;
 				continue;
 			}
 			switch (next.commandKey) { 
@@ -35,10 +35,10 @@ export function _makeUtilsBy(
 				}
 				case "switch-bold": {
 					if (_opened_tags.includes("<b>")) {
-						texthere_text.value += "</b>";
+						target_text.value += "</b>";
 						arraySpliceItem(_opened_tags, "<b>");
 					} else {
-						texthere_text.value += "<b>";
+						target_text.value += "<b>";
 						_opened_tags.push("<b>")
 					}
 					break
@@ -46,6 +46,7 @@ export function _makeUtilsBy(
 				default:
 					alert(`next.commandKey ${next.commandKey} is not defined`);
 			}
+			await sleep(20);
 		}
 		_request_skip_if_clicked.refuse();
 
@@ -67,7 +68,7 @@ export function _makeUtilsBy(
 
 		for (const state of new GlitchText(from, to)) {
 			// @ts-expect-error es2021
-			texthere_text.value = state.replaceAll('<', '&#60;').replaceAll('>', '&#62;')
+			target_text.value = state.replaceAll('<', '&#60;').replaceAll('>', '&#62;')
 			await skippable_sleep(50)
 		}
 
@@ -81,10 +82,10 @@ export function _makeUtilsBy(
 		}
 	}
 	function empty() {
-		texthere_text.value = "";
+		target_text.value = "";
 	}
 	function currentText() {
-		return texthere_text.value;
+		return target_text.value;
 	}
 	function use_pause(ms: number) {
 		return `^[pause time=${ms}]`;
@@ -101,5 +102,10 @@ export function _makeUtilsBy(
 		glitch,
 		write,
 		switch_bold,
+		async waitClick(){
+			return ofDisposableListener((resolve) =>
+				disposableListener("click", () => resolve())
+			);
+		}
 	};
 }
