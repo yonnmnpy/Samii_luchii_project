@@ -22,9 +22,11 @@ export function _makeUtilsBy(
 			_request_skip_if_clicked.refuse();
 			return;
 		}
-		for (const next of new LetterByLetterWriter(text)) {
+		const STARTING_DELAY = 80;
+		const ENDING_DELAY = 30;
+		for (const {value: next, index} of new LetterByLetterWriter(text)) {
 			if (typeof next === "string") {
-				await skippable_sleep(80)
+				await skippable_sleep(index / text.length * (STARTING_DELAY - ENDING_DELAY) + ENDING_DELAY)
 				target_text.value += next;
 				continue;
 			}
