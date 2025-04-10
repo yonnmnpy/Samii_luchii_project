@@ -15,4 +15,8 @@ export function arrayPadEnd<T>(target: T[], tolength: number, fill: T): T[] {
 
 	return target.concat(Array.from({ length: diff }).fill(fill) as T[]);
 }
+
+
+export function arrayOf<T>(length: number, mapFn: (i: number) => T): T[] {
+	return Array.from({length}, mapFn)
 }
