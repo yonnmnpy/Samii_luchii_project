@@ -16,6 +16,7 @@ export function _makeUtilsBy(
 		// @ts-expect-error es2021
 		text = text.replaceAll('<', '&#60;').replaceAll('>', '&#62;')
 		const _request_skip_if_clicked = ofDisposableListener((resolve) =>
+			// @ts-expect-error
 			disposableListener("click", resolve as EventListenerOrEventListenerObject)
 		);
 		if (deadline_end()) {
@@ -61,6 +62,7 @@ export function _makeUtilsBy(
 	}
 	async function glitch(from: string, to: string) {
 		const _request_skip_if_clicked = ofDisposableListener((resolve) =>
+			// @ts-expect-error
 			disposableListener("click", resolve as EventListenerOrEventListenerObject)
 		);
 		if (deadline_end()) {
