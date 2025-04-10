@@ -1,5 +1,5 @@
 <script setup lang = "ts">
-import { useSceneState } from './scene/singleton';
+import { useSceneState } from './current_scene_state';
 
 	
 	useSceneState
@@ -17,12 +17,17 @@ import { useSceneState } from './scene/singleton';
 <style scoped>
 	x-game-picture-area {
 		aspect-ratio: 1/1;
-		width: min(700px, max(300px, 80vmin));
+		position: relative;
+		width: max(300px, 80vmin);
 		max-width: 90vw;
-		/* height: 700px; */
-		display: block;
+		overflow: hidden;
 		background: #eee;
 		border: 2px solid;
 		box-shadow: 0px 0px 3px #0009;
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
+	
 </style>
