@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { useDisposableFactory } from "@/disposable/useDisposableFactory";
-import { _run_scene } from "@/novel/_scene/main";
+import MainMenu from "@/novel/MainMenu.scene/MainMenu.vue";
 import { randomNumberInRange } from "@/random/in_range";
 import { storeToRefs } from "pinia";
-import { h, onMounted, onUnmounted, reactive, ref, watch, type Reactive, type Ref } from "vue";
-import CurrentPicture from './CurrentPicture.vue';
-import { useSceneState } from "./scene/singleton";
+import { h, onUnmounted, reactive, ref, watch, type Reactive, type Ref } from "vue";
+import CurrentPicture from './Game/CurrentPicture.vue';
+import { useSceneState } from "./Game/current_scene_state";
+import TextArea from "./TextArea.vue";
 const scene_state_singleton = useSceneState()
 
 
-const { deadline_end } = useDisposableFactory(onUnmounted)
+const { useDisposable } = useDisposableFactory(onUnmounted)
 
 
 const template_main = ref()
@@ -27,7 +28,7 @@ function createX(backgroundRule: Ref<string, string>) {
 				width: "3vh",
 				height: "3vh",
 				left: `${Math.floor(Math.random() * 100)}vw`,
-				top: `${randomNumberInRange({max: 30}) * 3}vh`,
+				top: `${randomNumberInRange({ max: 30 }) * 3}vh`,
 				border: "solid 1px"
 
 			},
@@ -36,16 +37,14 @@ function createX(backgroundRule: Ref<string, string>) {
 	}
 }
 const list: Reactive<ReturnType<typeof createX>[]> = reactive([])
-const { backgroundRule } = storeToRefs(scene_state_singleton);
-watch(backgroundRule, () => {
-	list.push(createX(backgroundRule))
-})
-const texthere_text = ref("");
+const { backgroundRule, mainMenuOpened } = storeToRefs(scene_state_singleton);
+useDisposable(
+	watch(backgroundRule, () => {
+		list.push(createX(backgroundRule))
+	}).stop
+)
 
 
-onMounted(async () => {
-	_run_scene(texthere_text, deadline_end)
-})
 </script>
 
 
@@ -59,13 +58,15 @@ onMounted(async () => {
 		">Change BG</button>
 	</main>
 
-	<x-current-picture-position>
+
+	<MainMenu v-if = "mainMenuOpened"/>
+	
+	<x-current-picture-position v-if = "!mainMenuOpened">
 		<CurrentPicture />
 	</x-current-picture-position>
 
-	
-	<div id="texthere" v-html = "texthere_text">
-	</div>
+
+	<TextArea v-if = "!mainMenuOpened"/>
 </template>
 
 
@@ -76,15 +77,7 @@ main {
 	transition: all 5s;
 }
 
-#texthere {
-	position: fixed;
-	bottom: 0;
-	width: 100vw;
-	height: 5em;
-	color: white;
-	background: #0009;
-	text-align: center;
-}
+
 
 x-current-picture-position {
 	position: fixed;
