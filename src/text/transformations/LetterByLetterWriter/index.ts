@@ -1,6 +1,11 @@
 import { arrayPadEnd } from "@/array";
 
-type Next = string | Command;
+type Next = {
+	command?: Command
+	character?: string
+	index: number
+	value: string | Command;
+}
 enum DefaultCommandKey {
 	Pause,
 	InsertHTML,
@@ -42,10 +47,10 @@ export class LetterByLetterWriter {
 				const body = input.slice(index + 2, _end);
 				const command = parseCommand(body);
 				index = _end;
-				yield command;
+				yield {command, value: command, index};
 				continue;
 			}
-			yield character;
+			yield {character, value: character, index};
 		}
 	}
 }
