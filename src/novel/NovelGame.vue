@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import JustPointerBall from "@/JustPointerBall/JustPointerBall.vue";
 import { useDisposableFactory } from "@/disposable/useDisposableFactory";
+import { usePointer } from "@/document/usePoiner";
 import MainMenu from "@/novel/MainMenu.scene/MainMenu.vue";
 import { randomNumberInRange } from "@/random/in_range";
 import { storeToRefs } from "pinia";
@@ -8,6 +10,7 @@ import CurrentPicture from './Game/CurrentPicture.vue';
 import { useSceneState } from "./Game/current_scene_state";
 import TextArea from "./TextArea.vue";
 const scene_state_singleton = useSceneState()
+
 
 
 const { useDisposable } = useDisposableFactory(onUnmounted)
@@ -44,7 +47,8 @@ useDisposable(
 	}).stop
 )
 
-
+const { x, y } = usePointer()
+const changeBgLabel = ref("???");
 </script>
 
 
@@ -54,12 +58,17 @@ useDisposable(
 	}">
 		<component :is="$.vnode" :key="$.id" v-for="$ of list" />
 		<button @click="
-			() => scene_state_singleton.updateBackgroundRule('#' + (256 + Math.floor(Math.random() * 3000)).toString(16))
-		">Change BG</button>
+			() => {
+				scene_state_singleton.updateBackgroundRule('#' + (256 + Math.floor(Math.random() * 3000)).toString(16));
+				changeBgLabel = `Меняет цвет фона`;
+			}
+		">{{ changeBgLabel }}</button>
 	</main>
 
 
 	<MainMenu v-if = "mainMenuOpened"/>
+
+	<JustPointerBall :x="x!" :y="y!" v-if = "!mainMenuOpened"/>
 	
 	<x-current-picture-position v-if = "!mainMenuOpened">
 		<CurrentPicture />
