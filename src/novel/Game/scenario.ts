@@ -26,9 +26,8 @@ export async function _run_scene(target_text: Ref<string>, deadline_end: Functio
 		await waitClick()
 		empty()
 		await orderedCall(
-			`Привет. Пока ты работаешь, я забавляюсь.
-Как тебе игра попробуй попади по кнопке старта?
-Вообще это баг, но ты просто обязана была в него сыграть! :)`
+			`До того как движение шара стало похожим на движение по орбите получилась ещё одна игра — попади белым шариком по красному. Было сложно!
+Хорошего дня`
 				.split("\n")
 				.map(line => [() => w(line), waitClick, empty])
 				.flat()
