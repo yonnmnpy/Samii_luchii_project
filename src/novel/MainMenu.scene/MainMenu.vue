@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { disposableListener } from '@/document/disposableListener';
+import { usePointer } from '@/document/usePoiner';
+import JustPointerBall from '@/JustPointerBall/JustPointerBall.vue';
 import { useSceneState } from '@/novel/Game/current_scene_state';
 import { sleep } from '@/sleep';
 import { SECOND } from '@/time/constants';
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+
 const scene = useSceneState();
 
 async function runGame() {
@@ -12,46 +13,37 @@ async function runGame() {
 	scene.mainMenuOpened = false
 }
 
-function usePointer() {
-	const x = ref<number | null>(null)
-	const y = ref<number | null>(null);
-	onMounted( () => {
-		// @ts-expect-error
-		const dispose = disposableListener("pointermove", (pointerEvent: PointerEvent) => {
-			x.value = pointerEvent.x
-			y.value = pointerEvent.y 
-		})
-		onUnmounted(dispose)
-	})
-	
-	return { x, y };
-}
-
-const {x, y} = usePointer()
-const translate_x = computed(() => `${100 * Math.sin(x.value || 0)}%`)
-const translate_y = computed(() => `${100 * Math.sin(y.value || 0)}%`)
+const { x, y } = usePointer()
 </script>
 
 
 <template>
-	<button @click="runGame"></button>
+	<x-main-menu>
+			<button @click="runGame">Запустить</button> 
+			<span>|</span>
+			<button>От авторов</button>
+	</x-main-menu>
+	<JustPointerBall :x="x!" :y="y!"/>
 </template>
 
 
 <style scoped>
-button {
+x-main-menu {
 	position: fixed;
 	left: 50%;
 	top: 50%;
-	translate: v-bind("translate_x") v-bind("translate_y");
-
+	translate: -50% -50%;
 	color: white;
-	cursor: pointer;
-
-	border: 1px solid currentColor;
-	border-radius: 50%;
-	padding: 1em;
-	background: none;
-	transition: translate 50ms;
+	display: flex;
+	gap: 0.5em;
 }
+button {
+	background: none;
+	outline: none;
+	border: none;
+	text-decoration: underline;
+	cursor: pointer;
+	color: white;
+}
+
 </style>
