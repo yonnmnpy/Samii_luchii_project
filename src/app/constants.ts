@@ -1,0 +1,1 @@
+export const base = "/Samii_luchii_project"
