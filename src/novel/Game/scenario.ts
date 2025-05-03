@@ -1,3 +1,4 @@
+import { base } from "@/app/constants";
 import { useSceneState } from "@/novel/Game/current_scene_state";
 import { _makeUtilsBy } from "@/novel/Game/makeUtils";
 import { orderedCall } from "@/promise/orderedCall";
@@ -6,11 +7,17 @@ import { SECOND } from "@/time/constants";
 import type { Ref } from "vue";
 
 export async function _run_scene(target_text: Ref<string>, deadline_end: Function) {
-	const {write: w, use_pause, empty, currentText, glitch, switch_bold, waitClick} = _makeUtilsBy(target_text, deadline_end)
+	const {write: w, use_pause, empty, currentText, glitch, switch_bold, waitClick, display_fullscreen_image} = _makeUtilsBy(target_text, deadline_end)
 	const scene = useSceneState();
 	while (true) {
 		if (deadline_end()){
 			return;
+		}
+
+		{
+			const {remove} = await display_fullscreen_image(`${base}/src/novel/Game/img.png`)
+			await waitClick()
+			remove()
 		}
 		
 		await sleep(SECOND)
@@ -27,7 +34,7 @@ export async function _run_scene(target_text: Ref<string>, deadline_end: Functio
 		empty()
 		await orderedCall(
 			`До того как движение шара стало похожим на движение по орбите получилась ещё одна игра — попади белым шариком по красному. Было сложно!
-Хорошего дня`
+Хорошего дня!`
 				.split("\n")
 				.map(line => [() => w(line), waitClick, empty])
 				.flat()
