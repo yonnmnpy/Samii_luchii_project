@@ -1,13 +1,14 @@
+import { Routes } from "@/novel/router"
 import { defineStore } from "pinia"
 import { ref } from "vue"
 
 export const useSceneState = defineStore("scene", () => {
 	const backgroundRule = ref("#845AA9")
 	const mainPictureSrc = ref<string | null>(null) 
-	const mainMenuOpened = ref(true);
+	const currentRoute = ref(Routes.MainMenu);
 
 	return {
-		mainMenuOpened,
+		currentRoute,
 		mainPictureSrc,
 		updateMainPictureSrc(value: string | null){
 			mainPictureSrc.value = value
