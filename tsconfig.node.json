@@ -1,5 +1,6 @@
 {
   "include": [
+    "./src/app/constants.ts",
     "vite.config.*",
     "vitest.config.*",
     "cypress.config.*",
