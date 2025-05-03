@@ -1,20 +1,19 @@
 import { arraySpliceItem } from "@/array";
 import { disposableListener } from "@/document/disposableListener";
+import FullscreenImage from "@/FullscreenImage.vue";
 import { ofDisposableListener } from "@/OnceResolable/ofDisposableListener";
 import { sleep } from "@/sleep";
 import { GlitchText } from "@/text/transformations/GlitchText";
 import { LetterByLetterWriter } from "@/text/transformations/LetterByLetterWriter";
-import { type Ref } from "vue";
+import { useBodyCustomSlots } from "@/useBodyCustomSlots";
+import { h, Transition, type Ref } from "vue";
 
-export function _makeUtilsBy(
-	target_text: Ref<string>,
-	deadline_end: Function
-) {
+export function _makeUtilsBy(target_text: Ref<string>, deadline_end: Function) {
 	const _opened_tags: string[] = [];
-	
+
 	async function write(text: string) {
 		// @ts-expect-error es2021
-		text = text.replaceAll('<', '&#60;').replaceAll('>', '&#62;')
+		text = text.replaceAll("<", "&#60;").replaceAll(">", "&#62;");
 		const _request_skip_if_clicked = ofDisposableListener((resolve) =>
 			// @ts-expect-error
 			disposableListener("click", resolve as EventListenerOrEventListenerObject)
@@ -23,17 +22,19 @@ export function _makeUtilsBy(
 			_request_skip_if_clicked.refuse();
 			return;
 		}
-		const STARTING_DELAY = 80;
-		const ENDING_DELAY = 30;
-		for (const {value: next, index} of new LetterByLetterWriter(text)) {
+		const ADDABLE_DELAY = 40;
+		const MIN_DELAY = 60;
+		for (const { value: next, index } of new LetterByLetterWriter(text)) {
 			if (typeof next === "string") {
-				await skippable_sleep(index / text.length * (STARTING_DELAY - ENDING_DELAY) + ENDING_DELAY)
+				await skippable_sleep(
+					(index / text.length) * (ADDABLE_DELAY - MIN_DELAY) + MIN_DELAY
+				);
 				target_text.value += next;
 				continue;
 			}
-			switch (next.commandKey) { 
+			switch (next.commandKey) {
 				case "pause": {
-					await skippable_sleep(Number(next.values.time))
+					await skippable_sleep(Number(next.values.time));
 					break;
 				}
 				case "switch-bold": {
@@ -42,9 +43,9 @@ export function _makeUtilsBy(
 						arraySpliceItem(_opened_tags, "<b>");
 					} else {
 						target_text.value += "<b>";
-						_opened_tags.push("<b>")
+						_opened_tags.push("<b>");
 					}
-					break
+					break;
 				}
 				default:
 					alert(`next.commandKey ${next.commandKey} is not defined`);
@@ -53,9 +54,9 @@ export function _makeUtilsBy(
 		}
 		_request_skip_if_clicked.refuse();
 
-		function skippable_sleep(ms: number){
-			if (_request_skip_if_clicked.isFinally){
-				return
+		function skippable_sleep(ms: number) {
+			if (_request_skip_if_clicked.isFinally) {
+				return;
 			}
 			return Promise.race([sleep(ms), _request_skip_if_clicked.promise]);
 		}
@@ -71,16 +72,18 @@ export function _makeUtilsBy(
 		}
 
 		for (const state of new GlitchText(from, to)) {
-			// @ts-expect-error es2021
-			target_text.value = state.replaceAll('<', '&#60;').replaceAll('>', '&#62;')
-			await skippable_sleep(50)
+			target_text.value = state
+				// @ts-expect-error es2021
+				.replaceAll("<", "&#60;")
+				.replaceAll(">", "&#62;");
+			await skippable_sleep(50);
 		}
 
 		_request_skip_if_clicked.refuse();
 
-		function skippable_sleep(ms: number){
-			if (_request_skip_if_clicked.isFinally){
-				return
+		function skippable_sleep(ms: number) {
+			if (_request_skip_if_clicked.isFinally) {
+				return;
 			}
 			return Promise.race([sleep(ms), _request_skip_if_clicked.promise]);
 		}
@@ -106,7 +109,7 @@ export function _makeUtilsBy(
 		glitch,
 		write,
 		switch_bold,
-		async waitClick(){
+		async waitClick() {
 			return ofDisposableListener((resolve) =>
 				disposableListener("click", () => resolve())
 			);
