@@ -110,6 +110,28 @@ export function _makeUtilsBy(
 			return ofDisposableListener((resolve) =>
 				disposableListener("click", () => resolve())
 			);
-		}
+		},
+		async display_fullscreen_image(src: string) {
+			const dialog_vnode = h(FullscreenImage, {
+				class: "fullscreen",
+				src,
+			});
+			const vnode = h(
+				Transition,
+				{
+					css: false,
+					duration: 1_000,
+				},
+				() => dialog_vnode
+			);
+			const mounted = useBodyCustomSlots().pushComponent(vnode);
+			return {
+				remove() {
+					dialog_vnode.el?.classList.add("before-remove");
+					setTimeout(mounted.remove, 2_000);
+				},
+			};
+		},
+		async make_prompt(prompt: string, color: string) {},
 	};
 }
