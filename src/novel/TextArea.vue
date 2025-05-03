@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { useDisposableFactory } from '@/disposable/useDisposableFactory';
-import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { _run_scene } from './Game/scenario';
+import { onMounted, onUnmounted, ref, watch, type Ref } from 'vue';
 const { deadline_end } = useDisposableFactory(onUnmounted)
 
-
+const {scenario} = defineProps<{
+	scenario: (textRef: Ref<string>, deadline_end: () => void) => void
+}>()
 
 
 const texthere_text = ref("");
 
 onMounted(async () => {
-	_run_scene(texthere_text, deadline_end)
+	scenario(texthere_text, deadline_end)
 })
 
 const template_texthere = ref<HTMLDivElement>();
@@ -27,10 +28,13 @@ watch(texthere_text, () => {
 			if (current instanceof Text){
 				return current
 			}
+			if (!current){
+				return
+			}
 			current = current.childNodes[current.childNodes.length - 1]
 		}
 	})() as Text
-	if (!text_node.textContent){
+	if (!text_node?.textContent){
 		return;
 	}
 	const {textContent} = text_node;
@@ -39,6 +43,9 @@ watch(texthere_text, () => {
 	}
 
 	const highlight_please = text_node.textContent.trimEnd().length - 1;
+	if (highlight_please === -1){
+		return
+	}
 	
 	const range = new Range();
 	range.setStart( text_node!, highlight_please)
@@ -62,6 +69,7 @@ watch(texthere_text, () => {
 	color: white;
 	background: #0009;
 	text-align: center;
+	padding-inline: 5vw;
 }
 
 #texthere::highlight(apparance){
